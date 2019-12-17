@@ -10,7 +10,7 @@ _SHOW_IMAGE = False
 
 class EndToEndLaneFollower(object):
 
-    #NVINIA model: lane_navigation.h5
+    #NVIDIA model: lane_navigation.h5
     def __init__(self,
                  car=None,
                  model_path='/home/pi/DeepPiCar/models/lane_navigation/data/model_result/lane_navigation.h5'):
