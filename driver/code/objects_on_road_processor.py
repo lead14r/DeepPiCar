@@ -8,7 +8,7 @@ from traffic_objects import *
 
 _SHOW_IMAGE = False
 
-
+#ssd_mobilenet_v2 model: road_signs_quantized_edgetpu.tflite
 class ObjectsOnRoadProcessor(object):
     """
     This class 1) detects what objects (namely traffic signs and people) are on the road
