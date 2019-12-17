@@ -3,9 +3,7 @@ Xiang Zhao and Zhiyue Ding
 
 This project reproduces David Tian's DeepPiCar project on [github](https://github.com/dctian/DeepPiCar).
 
-We also have our project uploaded on our [github](http://github.com/lead14r/DeepPiCar/). 
-
-![](C:\Users\lead1\OneDrive\Desktop\DeepPiCar\Images\Cover.jpg)
+![](./doc/images/Cover.jpg)
 
 After training, this car will be able to drive it self along the lanes (curve or straight), and respond to different traffic objects. For example, it will stop 1 sec before a stop sign. The inference of detection of traffic object is utilizing a Google TPU (coral). Therefore, we need two CNN models to achieve two goals. The first model (**EndToEndLaneFollower**) is in charge of following lanes, the second model (**ObjectsOnRoadProcessor**) deals with the traffic objects on the road. 
 
@@ -24,19 +22,19 @@ There is no doubt that we , human  beings, are in the beginning of era of Artifi
 
 * Install operating system on Raspberry Pi, [step-by-step](https://projects.raspberrypi.org/en/projects/raspberry-pi-setting-up). 
 
-* Enable remote access to Raspberry Pi, [step-by-step](./Documents/Remote access to Raspberry Pi.pdf).
+* Enable remote access to Raspberry Pi, [step-by-step](./doc/Remote access to Raspberry Pi.pdf).
 
-* Install USB webcam application, [step-by-step](./Documents/Cheese.pdf).
+* Install USB webcam application, [step-by-step](./doc/Cheese.pdf).
 
-* Install PiCar API on Raspberry Pi, [step-by-step](./Documents/Sunfounder Picar-V API.pdf).
+* Install PiCar API on Raspberry Pi, [step-by-step](./doc/Sunfounder Picar-V API.pdf).
 
 * Assemble PiCar, [step-by-step](https://www.sunfounder.com/learn/download/X1BWQ19SYXNwYmVycnlfUGlfU21hcnRfVmlkZW9fQ2FyX1YyLjAucGRm/dispi), [video](https://www.youtube.com/watch?v=Tg_g4YoAZdc&list=PLwWF-ICTWmB6TJ9_kBLL4r_P4yszQycoU).
 
-* Calibrate PiCar, [step-by-step](./Documents/Calibration.pdf).
+* Calibrate PiCar, [step-by-step](./doc/Calibration.pdf).
 
-* Install OpenCV, [step-by-step](./Documents/OpenCV.pdf).
+* Install OpenCV, [step-by-step](./doc/OpenCV.pdf).
 
-* Install Tensorflow, [step-by-step](./Documents/Tensorflow.pdf).
+* Install Tensorflow, [step-by-step](./doc/Tensorflow.pdf).
 
 ## 3. Training data
 
