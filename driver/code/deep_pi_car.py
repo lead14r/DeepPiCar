@@ -21,7 +21,7 @@ class DeepPiCar(object):
         picar.setup()
 
         logging.debug('Set up camera')
-        self.camera = cv2.VideoCapture(-1)
+        self.camera = cv2.VideoCapture(0)
         self.camera.set(3, self.__SCREEN_WIDTH)
         self.camera.set(4, self.__SCREEN_HEIGHT)
 
