@@ -1,6 +1,6 @@
 # Self-driving car using Raspberry Pi and TensorFlow
 ## Baylor 201930 ELC 5396 06 - Deep Learning Final project 
-Xiang Zhao (Xiang_Zhao@baylor.edu) and Zhiyue Ding (zhiyue_ding@baylor.edu)
+Xiang Zhao (Xiang_Zhao@baylor.edu) and Zhiyue Ding (Zhiyue_Ding@baylor.edu)
 
 This project reproduces David Tian's DeepPiCar project on [Github](https://github.com/dctian/DeepPiCar).
 
