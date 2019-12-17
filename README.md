@@ -1,4 +1,4 @@
-# Self-driving car implemented with a Raspberry Pi and TensorFlow
+# Self-driving car using Raspberry Pi and TensorFlow
 Xiang Zhao and Zhiyue Ding
 
 This project reproduces David Tian's DeepPiCar project on [github](https://github.com/dctian/DeepPiCar).
