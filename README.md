@@ -22,11 +22,11 @@ There is no doubt that we , human  beings, are in the beginning of era of Artifi
 
 * Install operating system on Raspberry Pi, [step-by-step](https://projects.raspberrypi.org/en/projects/raspberry-pi-setting-up). 
 
-* Enable remote access to Raspberry Pi, [step-by-step](./doc/Remote access to Raspberry Pi.pdf).
+* Enable remote access to Raspberry Pi, [step-by-step](./doc/remote_access_to_raspberry_pi.pdf).
 
-* Install USB webcam application, [step-by-step](./doc/Cheese.pdf).
+* Install USB webcam application, [step-by-step](./doc/cheese.pdf).
 
-* Install PiCar API on Raspberry Pi, [step-by-step](./doc/Sunfounder Picar-V API.pdf).
+* Install PiCar API on Raspberry Pi, [step-by-step](./doc/sunfounder_Picar_V_API.pdf).
 
 * Assemble PiCar, [step-by-step](https://www.sunfounder.com/learn/download/X1BWQ19SYXNwYmVycnlfUGlfU21hcnRfVmlkZW9fQ2FyX1YyLjAucGRm/dispi), [video](https://www.youtube.com/watch?v=Tg_g4YoAZdc&list=PLwWF-ICTWmB6TJ9_kBLL4r_P4yszQycoU).
 
