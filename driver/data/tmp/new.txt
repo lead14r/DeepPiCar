@@ -1,1 +1,0 @@
-The video recorded by PiCar will be stored here.
