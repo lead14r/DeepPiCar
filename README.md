@@ -68,7 +68,7 @@ It outputs pictures with names like `video03_212_086.png`, the last three number
 
 We generate `data_B` without programing, since it's not time-consuming.
 
-We have 6 object types, namely, Red Light, Green Light, Stop Sign, 40 Mph Speed Limit, 25 Mph Speed Limit, and a few Lego figurines as pedestrians. So I took about 30 photos similar to the above and placed the objects randomly in each image. Using the below [program](./resize_images.py) to resize the images.
+We have 6 object types, namely, Red Light, Green Light, Stop Sign, 40 Mph Speed Limit, 25 Mph Speed Limit, and a few Lego figurines as pedestrians. So I took about 30 photos similar to the above and placed the objects randomly in each image. Using the below [program](https://github.com/lead14r/DeepPiCar/blob/master/models/object_detection/code/resize_images.py) to resize the images.
 
 ```
 python C:\Users\lead1\OneDrive\Desktop\DeepPiCar\resize_images.py --raw-dir "C:\Users\lead1\OneDrive\Desktop\DeepPiCar\Images 2" --save-dir "C:\Users\lead1\OneDrive\Desktop\DeepPiCar\Images 3" --ext jpg --target-size "(800, 600)"
