@@ -80,7 +80,7 @@ Then using [labelImg](https://tzutalin.github.io/labelImg/) to annotate images. 
 
 ## 4 CNNs
 
-**EndToEndLaneFollower** used a simple CNN proposed by NVIDIA [(Link)](./Documents/NVIDIA 1604.07316.pdf).
+**EndToEndLaneFollower** used a simple CNN proposed by NVIDIA [(Link)](./doc/nvidia_1604.07316.pdf).
 
 ![](./doc/images/5.jpeg)
 
@@ -122,7 +122,7 @@ print(model.summary())
 
 The full Jupyter Notebook used to train the model can be found on [Github](https://github.com/lead14r/DeepPiCar/blob/master/models/lane_navigation/code/end_to_end_lane_navigation.ipynb).
 
-**ObjectsOnRoadProcessor** is based on [MobileNet](./Documents/MobileNet 1704.04861.pdf) and [SSD](./Documents/SSD 1512.02325.pdf), also utilizes transfer learning technique. Specifically, we have done the following steps to adapt the pre-trained model to our case :
+**ObjectsOnRoadProcessor** is based on [MobileNet](./doc/mobile_net_1704.04861.pdf) and [SSD](./doc/ssd_1512.02325.pdf), also utilizes transfer learning technique. Specifically, we have done the following steps to adapt the pre-trained model to our case :
 
 * Image collection and labeling (1 hour)
 * Quantized trained SSD with MobileNet v2 on MSCOCO Dataset has been selected from [Google Model Zoo](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/detection_model_zoo.md).
