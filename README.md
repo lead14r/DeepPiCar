@@ -24,7 +24,7 @@ There is no doubt that we , human  beings, are in the beginning of era of Artifi
 
 * Enable remote access to Raspberry Pi, [step-by-step](./doc/remote_access_to_raspberry_pi.pdf).
 
-* Install USB webcam application, [step-by-step](./doc/cheese.pdf).
+* Install USB webcam application, [step-by-step](./doc/Cheese.pdf).
 
 * Install PiCar API on Raspberry Pi, [step-by-step](./doc/sunfounder_Picar_V_API.pdf).
 
@@ -32,7 +32,7 @@ There is no doubt that we , human  beings, are in the beginning of era of Artifi
 
 * Calibrate PiCar, [step-by-step](./doc/Calibration.pdf).
 
-* Install OpenCV, [step-by-step](./doc/OpenCV.pdf).
+* Install OpenCV, [step-by-step](./doc/open_cv.pdf).
 
 * Install Tensorflow, [step-by-step](./doc/Tensorflow.pdf).
 
