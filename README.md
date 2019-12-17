@@ -46,11 +46,11 @@ We  use a program `save_training_data.py ` [(Link)](https://github.com/lead14r/D
 
 |                Original Frame (left)                 |       Frame with extracted Lane Lines (right)        |
 | :--------------------------------------------------: | :--------------------------------------------------: |
-| ![](C:\Users\lead1\OneDrive\Desktop\DeepPiCar\1.png) | ![](C:\Users\lead1\OneDrive\Desktop\DeepPiCar\2.png) |
+| ![](./doc/iamges/1.png) | ![](./doc/iamges/2.png) |
 
 Then calculate steering angle based on extracted lane lines. 
 
-![](C:\Users\lead1\OneDrive\Desktop\DeepPiCar\3.png)
+![](./doc/iamges/3.png)
 
 
 
@@ -76,13 +76,13 @@ python C:\Users\lead1\OneDrive\Desktop\DeepPiCar\resize_images.py --raw-dir "C:\
 
 Then using [labelImg](https://tzutalin.github.io/labelImg/) to annotate images. (1 hour)
 
-![](C:\Users\lead1\OneDrive\Desktop\DeepPiCar\4.png)
+![](./doc/iamges/4.png)
 
 ## 4 CNNs
 
 **EndToEndLaneFollower** used a simple CNN proposed by NVIDIA [(Link)](./Documents/NVIDIA 1604.07316.pdf).
 
-![](C:\Users\lead1\OneDrive\Desktop\DeepPiCar\5.jpeg)
+![](./doc/iamges/5.jpeg)
 
 ```python
 def nvidia_model():
@@ -132,7 +132,7 @@ The full Jupyter Notebook used to train the model can be found on [Github](https
 
 The full Jupyter Notebook used to train the model can be found on [Github](https://github.com/lead14r/DeepPiCar/blob/master/models/object_detection/code/tensorflow_traffic_sign_detection.ipynb).
 
-![](C:\Users\lead1\OneDrive\Desktop\DeepPiCar\6.png)
+![](./doc/iamges/6.png)
 
 After training, PiCar can detect and identify what objects are in front of it, we still need to tell it what to do with them, i.e. motion control.  The codes are also in our Github. 
 
