@@ -1,147 +1,154 @@
-#### [DeepPiCar Series](https://towardsdatascience.com/tagged/deep-pi-car)
+# Self-driving car implemented with a Raspberry Pi and TensorFlow
+Xiang Zhao and Zhiyue Ding
 
-# DeepPiCar — Part 1: How to Build a Deep Learning, Self Driving Robotic Car on a Shoestring Budget
+This project reproduces David Tian's DeepPiCar project on [github](https://github.com/dctian/DeepPiCar).
 
-## An overview of how to build a Raspberry Pi and TensorFlow powered, self-driving robotic car
+We also have our project uploaded on our [github](http://github.com/lead14r/DeepPiCar/). 
 
-### By [David Tian](https://towardsdatascience.com/@dctian)
+![](C:\Users\lead1\OneDrive\Desktop\DeepPiCar\Images\Cover.jpg)
 
-Hacker, tinkerer, and engineer. I am passionate about machine learning, AI, and
-anything technology related.
+After training, this car will be able to drive it self along the lanes (curve or straight), and respond to different traffic objects. For example, it will stop 1 sec before a stop sign. The inference of detection of traffic object is utilizing a Google TPU (coral). Therefore, we need two CNN models to achieve two goals. The first model (**EndToEndLaneFollower**) is in charge of following lanes, the second model (**ObjectsOnRoadProcessor**) deals with the traffic objects on the road. 
 
-![](https://cdn-images-1.medium.com/max/800/1*4GhtKM-eyuYqEpZnnUJZ9w@2x.jpeg)
+## 1. Introduction
+There is no doubt that we , human  beings, are in the beginning of era of Artificial Intelligence (AI). AI is catching up our intelligence more and more rapidly.  At the ILSVRC 2015, the so-called Residual Neural Network (ResNet) achieves a error rate of 3.57% which beats human-level performance on this dataset. This ReNet is a convolutional neural network (CNN), which is a class of [deep neural networks](https://en.wikipedia.org/wiki/Deep_neural_network)(DNN). Today's AI is mostly based on DNN. In this project, we will use the other two variants of CNN to make our car see the world. We will deeply dive into this later. Once the car have the vision, it can drive itself with a few lines of codes. This document is organized as follows: in section 2, we discuss how to set up the SunFounder PiCar-V (PiCar) and Raspberry Pi; in section 3, we investigate the method used to generate the training data; in section 4, we presents two CNNs, one is dedicated to following the lanes, the other is in charge of processing the traffic objects; in section 5, we demonstrate our car is actually autonomous.
 
-### Introduction
+## 2. Setup
+| Hardware                                           | Software   |
+| -------------------------------------------------- | ---------- |
+| Raspberry Pi 3 Model B+ kit with 2.5A Power Supply | Python 3.x |
+| 64 GB micro SD Card                                | OpenCV     |
+| SunFounder PiCar-V kit                             | Tensorflow |
+| 18650 batteries (4) and  battery charger           |            |
+| Google Edge TPU USB Accelerator                    |            |
+| Miniature Traffic Signs  and a few Lego figurines. |            |
 
-Today, Tesla, Google, Uber, and GM are all trying to create their own
-self-driving cars that can run on real-world roads. Many analysts predict that
-within the next 5 years, we will start to have fully autonomous cars running in
-our cities, and within 30 years, nearly ALL cars will be fully autonomous.
-Wouldn’t it be cool to build your very own self-driving car using some of the
-same techniques the big guys use? In this and next few articles, I will guide
-you through how to build your own physical, deep-learning, self-driving robotic
-car from scratch. You will be able to make your car detect and follow lanes,
-recognize and respond to traffic signs and people on the road in under a week.
-Here is a sneak peek at your final product.
+* Install operating system on Raspberry Pi, [step-by-step](https://projects.raspberrypi.org/en/projects/raspberry-pi-setting-up). 
 
-![](https://cdn-images-1.medium.com/max/600/1*3sMJxWJ34vQH0WobdFPVAA.jpeg)
+* Enable remote access to Raspberry Pi, [step-by-step](./Documents/Remote access to Raspberry Pi.pdf).
 
-Lane Following
+* Install USB webcam application, [step-by-step](./Documents/Cheese.pdf).
 
-![](https://cdn-images-1.medium.com/max/600/1*bYqrTsiMnoaKu9CfjewlEg.jpeg)
+* Install PiCar API on Raspberry Pi, [step-by-step](./Documents/Sunfounder Picar-V API.pdf).
 
-Traffic Sign and People Detection (right) from
-DeepPiCar’s DashCam</span>
+* Assemble PiCar, [step-by-step](https://www.sunfounder.com/learn/download/X1BWQ19SYXNwYmVycnlfUGlfU21hcnRfVmlkZW9fQ2FyX1YyLjAucGRm/dispi), [video](https://www.youtube.com/watch?v=Tg_g4YoAZdc&list=PLwWF-ICTWmB6TJ9_kBLL4r_P4yszQycoU).
 
-### Our Road Map
+* Calibrate PiCar, [step-by-step](./Documents/Calibration.pdf).
 
-*Part 2*: I will list what hardware to buy and how to set them up. In short, you
-will need a [Raspberry
-Pi](https://www.amazon.com/CanaKit-Raspberry-Power-Supply-Listed/dp/B07BC6WH7V/)
-board($50), [SunFounder PiCar
-kit](https://www.amazon.com/SunFounder-Raspberry-Graphical-Programming-Electronic/dp/B06XWSVLL8)
-($115), [Google’s Edge TPU](https://coral.withgoogle.com/products/accelerator)
-($75) plus a few accessories, and how each part is important in later articles.
-The total cost of the materials is around $250–300. We will also install all the
-software drivers needed by Raspberry Pi and PiCar.
+* Install OpenCV, [step-by-step](./Documents/OpenCV.pdf).
 
-![](https://cdn-images-1.medium.com/max/400/1*H7mwt6TcJtZc28fsKh42xg.jpeg)
+* Install Tensorflow, [step-by-step](./Documents/Tensorflow.pdf).
 
-Raspberry Pi 3 B+
+## 3. Training data
 
-![](https://cdn-images-1.medium.com/max/400/1*LUD3NFk4hCz5wFpRWSGODQ.jpeg)
+For EndToEndLaneFollower, the inputs are the real-time frames taken by the webcam, and the output is the steering angle. For ObjectsOnRoadProcessor, the inputs are same, the outputs are classes such as stop sign, speed limit. Thus, we need two kinds of training data, one is ` data_A = [frame, steering_angle]`, the other is `data_B=[frame, class, box]`.
 
-SunFounder PiCar-V Robotic Car Kit
+### data_A
 
-<img src="https://cdn-images-1.medium.com/max/600/1*RIddRse2MoaJtSFes6VkgQ.jpeg" width="300" />
+We  use a program `save_training_data.py ` [(Link)](https://github.com/lead14r/DeepPiCar/blob/master/driver/code/save_training_data.py) to generate `data_A`  because it's time-consuming to do it by hand.  This python program utilize OpenCV's image processing functions to calculate steering angle for each frame. The basic logic is to extract lane lines first.
 
-Google Edge TPU Accelerator
+|                Original Frame (left)                 |       Frame with extracted Lane Lines (right)        |
+| :--------------------------------------------------: | :--------------------------------------------------: |
+| ![](C:\Users\lead1\OneDrive\Desktop\DeepPiCar\1.png) | ![](C:\Users\lead1\OneDrive\Desktop\DeepPiCar\2.png) |
 
-*Part 3*: We will set up all the Computer Vision and Deep Learning software
-needed. The main software tools we use are [Python](https://www.python.org/)
-(the de-facto programming language for Machine Learning/AI tasks), [OpenCV
-](https://github.com/opencv/opencv)(a powerful computer vision package) and
-[Tensorflow ](https://www.tensorflow.org/)(Google’s popular deep learning
-framework). Note all the software we use here are FREE and open source!
+Then calculate steering angle based on extracted lane lines. 
 
-![](https://cdn-images-1.medium.com/max/800/1*_jABdMfUVcyPdi5b3zlfVg.jpeg)
-
-*Part 4*: With the (tedious) hardware and software setup out of the way, we will
-dive right into the FUN parts! Our first project is to use python and OpenCV to
-teach DeepPiCar to navigate autonomously on a winding single lane road by
-detecting lane lines and steer accordingly.
-
-![](https://cdn-images-1.medium.com/max/800/1*cVqpqZ129JiiQZxZwqMlMg.jpeg)
-<span class="figcaption_hack">Step-by-Step Lane Detection</span>
-
-*Part 5*: we will train DeepPiCar to navigate the lane autonomously without having
-to explicitly write logic to control it, as was done in our first project. This
-is achieved by using “behavior cloning”, where we use just the videos of the
-road and the correct steering angles for each video frame to train DeepPiCar to
-drive itself. The implementation is inspired by [NVIDIA’s
-DAVE-2](https://images.nvidia.com/content/tegra/automotive/images/2016/solutions/pdf/end-to-end-dl-using-px.pdf)
-full-sized autonomous car, which uses a deep Convolutional Neural Network to
-detect road features and make the correct steering decisions.
-
-<span class="figcaption_hack">Lane Following in Action</span>
-
-Lastly, in *Part 6*: We will use deep learning techniques such as [single shot
-multi-box object detection](https://arxiv.org/abs/1512.02325) and [transfer
-learning](https://machinelearningmastery.com/transfer-learning-for-deep-learning/)
-to teach DeepPiCar to detect various (miniature) traffic signs and pedestrians
-on the road. And then we will teach it to stop at red lights and stop signs, go
-on green lights, stop to wait for a pedestrian to cross, and change its speed
-limit according to the posted speed signs, etc.
-
-![](https://cdn-images-1.medium.com/max/1200/1*Hw7r95umdwnzK2EPTayvfg.jpeg)
-<span class="figcaption_hack">Traffic Signs and People Detection Model Training in TensorFlow</span>
-
-### Prerequisite
-
-Here are the prerequisites of these articles:
-
-* First and foremost is the willingness to *tinker and break things*. Unlike in a
-car simulator, where everything is deterministic and perfectly repeatable,
-real-world model cars can be unpredictable and you must be willing to get your
-hands dirty and start to tinker with both the hardware and software.
-* Basic *Python programming* skills. I will assume you know how to read python
-code and write functions, if statements and loops in python. Most of my code is
-well documented, specifically the harder to understand parts.
-* Basic *Linux operating system* knowledge. I will assume you know how to run
-commands in Bash shell in Linux, which is Raspberry Pi’s operating system. My
-articles will tell you exactly which commands to run, why we run them, and what
-to expect as output.
-* Lastly, you will need about *$250-$300* to buy all the hardware and working PC
-(Windows/Mac or Linux). Again, all the software used will be free.
-
-
-### What’s Next
-
-That’s all for the first article. I will see you in Part 2 where we will get our
-hands dirty and build a robotic car together!
-
-Here are the links to the whole guide:
-
-Part 1: [Overview](https://medium.com/@dctian/deeppicar-part-1-102e03c83f2c?source=your_stories_page---------------------------)
-(This article)
-
-Part 2: [Raspberry Pi Setup and PiCar
-Assembly](https://medium.com/@dctian/deeppicar-part-2-8512be2133f3?source=your_stories_page---------------------------)
-
-Part 3: [Make PiCar See and
-Think](https://medium.com/@dctian/deeppicar-part-3-d648b76fc0be?source=your_stories_page---------------------------)
-
-Part 4: [Autonomous Lane Navigation via
-OpenCV](https://medium.com/@dctian/deeppicar-part-4-lane-following-via-opencv-737dd9e47c96?source=your_stories_page---------------------------)
-
-Part 5:
-[Autonomous](https://medium.com/@dctian/deeppicar-part-4-lane-following-via-opencv-737dd9e47c96?source=your_stories_page---------------------------)[
-Lane Navigation via Deep
-Learning](https://medium.com/@dctian/deeppicar-part-5-lane-following-via-deep-learning-d93acdce6110?source=your_stories_page---------------------------)
-
-Part 6: [Traffic Sign and Pedestrian Detection and
-Handling](https://medium.com/@dctian/deeppicar-part-6-963334b2abe0?source=your_stories_page---------------------------)
+![](C:\Users\lead1\OneDrive\Desktop\DeepPiCar\3.png)
 
 
 
+The direction of PiCar (red line) is determined by averaging far ends points of both lane lines. Note that the lower end of the red line is always in the middle of the bottom of the screen, that’s because we assume the webcam is installed in the middle of the car and pointing straight ahead. Then steering angle is just the angle between vertical-axis and red line.
+
+With this program at hand, we control the PiCar to move following the lanes while recording the video. then we generating data by the command below.
+
+```
+pi@raspberrypi:~/DeepPiCar/driver/code $ python3 save_training_data.py ~/Videos/video03
+```
+
+It outputs pictures with names like `video03_212_086.png`, the last three number is the steering angle `086`. Note that for PiCar, 45-90 is left, 90-135 is right, and 90 is straight. The below is an example of our training data.
+
+### data_B
+
+We generate `data_B` without programing, since it's not time-consuming.
+
+We have 6 object types, namely, Red Light, Green Light, Stop Sign, 40 Mph Speed Limit, 25 Mph Speed Limit, and a few Lego figurines as pedestrians. So I took about 30 photos similar to the above and placed the objects randomly in each image. Using the below [program](./resize_images.py) to resize the images.
+
+```
+python C:\Users\lead1\OneDrive\Desktop\DeepPiCar\resize_images.py --raw-dir "C:\Users\lead1\OneDrive\Desktop\DeepPiCar\Images 2" --save-dir "C:\Users\lead1\OneDrive\Desktop\DeepPiCar\Images 3" --ext jpg --target-size "(800, 600)"
+```
+
+Then using [labelImg](https://tzutalin.github.io/labelImg/) to annotate images. (1 hour)
+
+![](C:\Users\lead1\OneDrive\Desktop\DeepPiCar\4.png)
+
+## 4 CNNs
+
+**EndToEndLaneFollower** used a simple CNN proposed by NVIDIA [(Link)](./Documents/NVIDIA 1604.07316.pdf).
+
+![](C:\Users\lead1\OneDrive\Desktop\DeepPiCar\5.jpeg)
+
+```python
+def nvidia_model():
+    model = Sequential(name='Nvidia_Model')
+    
+    # elu=Expenential Linear Unit, similar to leaky Relu
+    # skipping 1st hiddel layer (nomralization layer), as we have normalized the data
+    
+    # Convolution Layers
+    model.add(Conv2D(24, (5, 5), strides=(2, 2), input_shape=(66, 200, 3),\	                 activation='elu')) 
+    model.add(Conv2D(36, (5, 5), strides=(2, 2), activation='elu')) 
+    model.add(Conv2D(48, (5, 5), strides=(2, 2), activation='elu')) 
+    model.add(Conv2D(64, (3, 3), activation='elu')) 
+    model.add(Dropout(0.2)) # not in original model. added for more robustness
+    model.add(Conv2D(64, (3, 3), activation='elu')) 
+    
+    # Fully Connected Layers
+    model.add(Flatten())
+    model.add(Dropout(0.2)) # not in original model. added for more robustness
+    model.add(Dense(100, activation='elu'))
+    model.add(Dense(50, activation='elu'))
+    model.add(Dense(10, activation='elu'))
+    
+    # output layer: turn angle (from 45-135, 90 is straight, <90 turn left, >90 turn         right)
+    model.add(Dense(1)) 
+    
+    # since this is a regression problem not classification problem,
+    # we use MSE (Mean Squared Error) as loss function
+    optimizer = Adam(lr=1e-3) # lr is learning rate
+    model.compile(loss='mse', optimizer=optimizer)
+    
+    return model
+
+model = nvidia_model()
+print(model.summary())
+```
+
+The full Jupyter Notebook used to train the model can be found on [Github](https://github.com/lead14r/DeepPiCar/blob/master/models/lane_navigation/code/end_to_end_lane_navigation.ipynb).
+
+**ObjectsOnRoadProcessor** is based on [MobileNet](./Documents/MobileNet 1704.04861.pdf) and [SSD](./Documents/SSD 1512.02325.pdf), also utilizes transfer learning technique. Specifically, we have done the following steps to adapt the pre-trained model to our case :
+
+* Image collection and labeling (1 hour)
+* Quantized trained SSD with MobileNet v2 on MSCOCO Dataset has been selected from [Google Model Zoo](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/detection_model_zoo.md).
+* Transfer learning/model training (3–4 hours)
+* Save model output in Edge TPU format (5 min)
+* Run model inferences on Raspberry Pi
+
+The full Jupyter Notebook used to train the model can be found on [Github](https://github.com/lead14r/DeepPiCar/blob/master/models/object_detection/code/tensorflow_traffic_sign_detection.ipynb).
+
+![](C:\Users\lead1\OneDrive\Desktop\DeepPiCar\6.png)
+
+After training, PiCar can detect and identify what objects are in front of it, we still need to tell it what to do with them, i.e. motion control.  The codes are also in our Github. 
+
+* [traffic_objects.py](https://github.com/lead14r/DeepPiCar/blob/master/driver/code/traffic_objects.py).
+
+* [object_on_road_processor.py](https://github.com/lead14r/DeepPiCar/blob/master/driver/code/objects_on_road_processor.py).
+
+The rules are pretty simple: if no object is detected, then drive at the last known speed limit. If some object is detected, that object will modify car’s speed or speed limit.
+
+## 5 Results
+
+* [Video 1](https://www.youtube.com/watch?v=uJVD-99SaUQ)
+* [Video 2](https://www.youtube.com/watch?v=191kxmClAb0&t=35s)
+* [Video 3](https://www.youtube.com/watch?v=joa1y8AXkQQ)
+
+From videos, it is clear that the car is driving itself and capable of detecting the traffic objects. You may find that the latency still exits. Even though we have deployed **ObjectsOnRoadProcessor** on Edge TPU, the CPU of raspberry pi is still running the **EndToEndLaneFollower** model as well as video processing program. 
 
